@@ -1,8 +1,10 @@
-# Basket Training V2.2
+# Basket Training V2.3
 
-- Même clé de données : `basketTrainingV2`
-- Export d'une sauvegarde JSON
-- Import d'une sauvegarde JSON
-- Mise à jour PWA renforcée (nouveau service worker network-first)
-- Rangs/divisions V2.1 conservés
+Correction du bug `NaN%`.
+
+- Même sauvegarde : `basketTrainingV2`
+- Exercices, séances et historique conservés
+- Export / Import conservés
+- Rookie → Pôle Espoir → Pro → EuroLeague → NBA → All-Star → MVP
+- IV / III / II / I dans chaque rang sauf MVP
 - MVP à 365 séances
