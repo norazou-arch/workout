@@ -35,4 +35,26 @@ function openRank(i){
  document.querySelector("#rankDialog").showModal();
 }
 document.querySelector("[data-rclose]").onclick=()=>document.querySelector("#rankDialog").close();
+
+function exportBackup(){
+ const payload={app:"Basket Training",version:"2.2",exportedAt:new Date().toISOString(),storageKey:K,data:x};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="basket-training-sauvegarde.json";document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+exportData.onclick=exportBackup;
+importData.onclick=()=>importFile.click();
+importFile.onchange=async()=>{
+ const f=importFile.files&&importFile.files[0]; if(!f)return;
+ try{
+   const raw=JSON.parse(await f.text());
+   const incoming=raw&&raw.data?raw.data:raw;
+   if(!incoming||!Array.isArray(incoming.plan)||!incoming.weeks||typeof incoming.total!=="number")throw new Error();
+   if(!confirm(`Importer cette sauvegarde (${incoming.total} séances) ?`))return;
+   x=incoming;save();alert("Sauvegarde importée. Tes données sont restaurées.");location.reload();
+ }catch(e){alert("Ce fichier n'est pas une sauvegarde Basket Training valide.");}
+ finally{importFile.value="";}
+};
+
 if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");render();
