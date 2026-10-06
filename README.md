@@ -1,5 +1,9 @@
-# Basket Training V2
+# Basket Training V2.1
 
-V2 blanc/orange avec semaines navigables, exercices personnalisables, historique, progression persistante et rangs Rookie → Pôle Espoir → Pro B → Pro A → EuroLeague → NBA → All-Star → MVP (365 séances).
-
-Remplace les anciens fichiers du dépôt GitHub `workout` par ceux-ci et ajoute les PNG. GitHub Pages se redéploiera automatiquement.
+- Conserve les données V2 existantes (`basketTrainingV2`)
+- 6 grands rangs + MVP
+- 4 divisions par rang : IV, III, II, I
+- 20 divisions à 15 séances et 4 divisions à 16 séances
+- 364 séances avant le dernier passage vers MVP
+- MVP débloqué à 365 séances
+- Les grands rangs sont cliquables pour afficher le détail des divisions
