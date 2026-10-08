@@ -51,14 +51,30 @@ function openS(i){
  document.getElementById("changeSession").disabled=!!week().done[i];document.getElementById("undoSession").hidden=!week().done[i];
  drawEx();session.showModal();
 }
+function routineChange(type, operation){
+ const old=[...(x.ex[type]||[])], updated=[...old];
+ operation(updated,null);
+ x.ex[type]=updated;
+ for(const w of Object.values(x.weeks)){
+   for(const [day,z] of Object.entries(w.sessions||{})){
+     if(z.type!==type||w.done?.[+day])continue;
+     // Keep checks matched to exercises when their order changes.
+     const checks=[...(z.checks||[])];
+     const ex=[...(z.ex||[])];
+     operation(ex,checks);
+     z.ex=ex;z.checks=checks;
+   }
+ }
+ save();
+}
 function drawEx(){
  const z=sessionData(active),done=!!week().done[active];
  exercises.innerHTML=z.ex.length?z.ex.map((v,j)=>`<div class="exercise" data-ex="${j}" draggable="${!done}"><span class="handle" aria-label="Réorganiser" title="Maintenir pour déplacer">⠿</span><label><input type="checkbox" data-c="${j}" ${z.checks[j]?"checked":""} ${done?"disabled":""}><span>${esc(v)}</span></label><button class="edit-ex" data-e="${j}" ${done?"disabled":""} aria-label="Modifier">✎</button><button class="delete" data-d="${j}" ${done?"disabled":""} aria-label="Supprimer">×</button></div>`).join(""):`<p>Pas d'exercices détaillés. Tu peux valider directement ou en ajouter.</p>`;
  document.querySelectorAll("[data-c]").forEach(a=>a.onchange=()=>{z.checks[+a.dataset.c]=a.checked;save();state()});
- document.querySelectorAll("[data-e]").forEach(a=>a.onclick=()=>{const j=+a.dataset.e,v=prompt("Modifier l'exercice :",z.ex[j]);if(v?.trim()){z.ex[j]=v.trim();save();drawEx()}});
- document.querySelectorAll("[data-d]").forEach(a=>a.onclick=()=>{const j=+a.dataset.d;if(confirm("Supprimer cet exercice ?")){z.ex.splice(j,1);z.checks.splice(j,1);save();drawEx()}});
+ document.querySelectorAll("[data-e]").forEach(a=>a.onclick=()=>{const j=+a.dataset.e,v=prompt("Modifier l'exercice :",z.ex[j]);if(v?.trim()){routineChange(z.type,(a)=>{if(j<a.length)a[j]=v.trim()});drawEx()}});
+ document.querySelectorAll("[data-d]").forEach(a=>a.onclick=()=>{const j=+a.dataset.d;if(confirm("Supprimer cet exercice ?")){routineChange(z.type,(a,c)=>{if(j<a.length){a.splice(j,1);if(c)c.splice(j,1)}});drawEx()}});
  let from=null,touchFrom=null,touchY=0;
- const move=(i,j)=>{if(i===j||i<0||j<0)return;for(const arr of [z.ex,z.checks])arr.splice(j,0,arr.splice(i,1)[0]);save();drawEx()};
+ const move=(i,j)=>{if(i===j||i<0||j<0)return;routineChange(z.type,(a,c)=>{if(i<a.length&&j<a.length){a.splice(j,0,a.splice(i,1)[0]);if(c)c.splice(j,0,c.splice(i,1)[0])}});drawEx()};
  document.querySelectorAll("[data-ex]").forEach(el=>{
    el.addEventListener("dragstart",e=>{if(done){e.preventDefault();return}from=+el.dataset.ex;e.dataTransfer.effectAllowed="move"});
    el.addEventListener("dragover",e=>e.preventDefault());
@@ -78,7 +94,7 @@ function state(){
  hint.textContent=w.done[active]?"Cette séance est enregistrée.":ok?"La séance peut être validée.":"Coche tous les exercices pour valider la séance.";
 }
 validate.onclick=()=>{const w=week();if(!w.done[active]){w.done[active]=true;x.total++;save()}session.close();render()};
-add.onclick=()=>{const v=prompt("Nom de l'exercice :");if(v?.trim()){const z=sessionData(active);z.ex.push(v.trim());z.checks.push(false);save();drawEx()}};
+add.onclick=()=>{const v=prompt("Nom de l'exercice :");if(v?.trim()){const z=sessionData(active);routineChange(z.type,(a,c)=>{a.push(v.trim());if(c)c.push(false)});drawEx()}};
 document.querySelector("[data-close]").onclick=()=>{session.close();render()};
 document.getElementById("undoSession").onclick=()=>{const w=week();if(!w.done[active])return;if(!confirm("Annuler la validation de cette séance ? Le total diminuera de 1 et tu pourras à nouveau modifier les exercices."))return;w.done[active]=false;x.total=Math.max(0,x.total-1);save();document.getElementById("undoSession").hidden=true;document.getElementById("changeSession").disabled=false;drawEx();render();};
 document.getElementById("changeSession").onclick=()=>{

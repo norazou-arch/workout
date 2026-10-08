@@ -1,3 +1,3 @@
-# Basket Training V2.5
+# Basket Training V2.6
 
-Ajout du bouton « Annuler la validation » avec confirmation, qui retire une séance du total sans supprimer les exercices. Fonctions V2.4 et Export/Import conservées.
+Les modifications, ajouts, suppressions et déplacements des exercices mettent à jour la routine habituelle et les séances non validées du même type. Les séances validées restent inchangées. « Changer cette séance uniquement » reste local au jour choisi. Export/Import et clé basketTrainingV2 conservés.
