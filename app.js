@@ -48,7 +48,7 @@ function render(){
 }
 function openS(i){
  active=i;const z=sessionData(i);sday.textContent=D[i];sname.textContent=z.title;
- document.getElementById("changeSession").disabled=!!week().done[i];
+ document.getElementById("changeSession").disabled=!!week().done[i];document.getElementById("undoSession").hidden=!week().done[i];
  drawEx();session.showModal();
 }
 function drawEx(){
@@ -80,6 +80,7 @@ function state(){
 validate.onclick=()=>{const w=week();if(!w.done[active]){w.done[active]=true;x.total++;save()}session.close();render()};
 add.onclick=()=>{const v=prompt("Nom de l'exercice :");if(v?.trim()){const z=sessionData(active);z.ex.push(v.trim());z.checks.push(false);save();drawEx()}};
 document.querySelector("[data-close]").onclick=()=>{session.close();render()};
+document.getElementById("undoSession").onclick=()=>{const w=week();if(!w.done[active])return;if(!confirm("Annuler la validation de cette séance ? Le total diminuera de 1 et tu pourras à nouveau modifier les exercices."))return;w.done[active]=false;x.total=Math.max(0,x.total-1);save();document.getElementById("undoSession").hidden=true;document.getElementById("changeSession").disabled=false;drawEx();render();};
 document.getElementById("changeSession").onclick=()=>{
  const w=week();if(w.done[active])return;
  const z=sessionData(active);

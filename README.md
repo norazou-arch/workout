@@ -1,3 +1,3 @@
-# Basket Training V2.4
+# Basket Training V2.5
 
-Séance modifiable pour un seul jour, exercices éditables et réorganisables. Sauvegarde conservée sous basketTrainingV2. Export / Import conservés.
+Ajout du bouton « Annuler la validation » avec confirmation, qui retire une séance du total sans supprimer les exercices. Fonctions V2.4 et Export/Import conservées.
